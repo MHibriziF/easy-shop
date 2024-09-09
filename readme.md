@@ -41,7 +41,7 @@ Dibuat oleh Muhammad Hibrizi Farghana - 2306165585
      django-admin startproject easy_shop .
      ```
   7. Di dalam direktori proyek `easy_shop`, akan ditemukan file `settings.py`. Agar proyek dapat dijalankan secara lokal, maka perlu ditambahkan string `"localhost"` dan `"127.0.0.1"` ke dalam list `ALLOWED_HOST` yang berada pada `settings.py`. List `ALLOWED_HOST` akan berisi sebagai berikut
-     ```
+     ```python
      ...
      ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
      ...
@@ -58,7 +58,7 @@ Dibuat oleh Muhammad Hibrizi Farghana - 2306165585
      python manage.py startapp main
      ```
   2. Menambahkan aplikasi `main` ke list `INSTALLED_APPS` pada file `settings.py` di direktori proyek `easy_shop`. List `INSTALLED_APPS` kini berisi sebagai berikut:
-     ```
+     ```python
      INSTALLED_APPS = [
          ...,
          'main'
@@ -71,7 +71,7 @@ Dibuat oleh Muhammad Hibrizi Farghana - 2306165585
   1. Buka file `urls.py` yang berada di direktori proyek `easy_shop`
   2. Mengimpor fungsi `include` dari `django.urls`. Fungsi `include` dibutuhkan agar dapat melakukan impor rute URL dari aplikasi lain ke `urls.py` pada proyek
   3. Menambahkan rute URL `''` untuk mengarahkan ke tampilan `main` di dalam list `urlpatterns`. List tersebut akan berisi seperti berikut:
-     ```
+     ```python
      urlpatterns = [
          path('admin/', admin.site.urls),
          path('', include('main.urls')),
@@ -83,7 +83,7 @@ Dibuat oleh Muhammad Hibrizi Farghana - 2306165585
 
   1. Buka file `models.py` pada direktori aplikasi `main`
   2. Membuat class dengan nama `Product` dan diisi dengan atribut wajib `name`, `price`, dan `description` sesuai dengan tipe datanya masing-masing. Saya juga menambahkan atribut tambahan berupa `stock` yang saya beri tipe data `IntegerField`. Isi dari `models.py` adalah sebagai berikut:
-     ```
+     ```python
      class Product(models.Model):
          name = models.CharField(max_length=255)
          price = models.IntegerField()
@@ -106,36 +106,38 @@ Dibuat oleh Muhammad Hibrizi Farghana - 2306165585
   2. Membuat file HTML baru bernama `main.html` pada direktori `templates`.
   3. Menambahkan kode berikut ke dalam file `main.html`
 
-     ```
+     ```html
      <!DOCTYPE html>
      <html lang="en">
-     <head>
+       <head>
          <meta charset="UTF-8" />
-         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+         <meta
+           name="viewport"
+           content="width=device-width, initial-scale=1.0"
+         />
          <title>Document</title>
-     </head>
-     <body>
+       </head>
+       <body>
          <h1>{{appname}}</h1>
          <h3>Nama</h3>
          <p>{{nama}}</p>
          <h3>Kelas</h3>
          <p>{{kelas}}</p>
-     </body>
+       </body>
      </html>
-
      ```
 
   4. Menambahkan fungsi baru pada file `views.py` yang berada pada direktori aplikasi `main`.
 
-     ```
+     ```python
      def show_main(request):
-     context = {
-         'appname' : 'Easy Shop',
-         'nama': 'Muhammad Hibrizi Farghana',
-         'kelas': 'PBP A'
-     }
+         context = {
+               'appname' : 'Easy Shop',
+               'nama': 'Muhammad Hibrizi Farghana',
+               'kelas': 'PBP A'
+         }
 
-     return render(request, "main.html", context)
+         return render(request, "main.html", context)
      ```
 
      Fungsi untuk me-_render_ laman main telah berhasil dibuat
@@ -145,7 +147,7 @@ Dibuat oleh Muhammad Hibrizi Farghana - 2306165585
   1. Membuat file `urls.py` pada direktori aplikasi `main`
   2. Menambahkan kode berikut ke dalam file `urls.py`
 
-     ```
+     ```python
      from django.urls import path
      from main.views import show_main
 
@@ -163,7 +165,7 @@ Dibuat oleh Muhammad Hibrizi Farghana - 2306165585
   2. Membuat proyek baru dengan menekan tombol `+ Create New Project` kemudian mengisi nama proyek sebagai `easyshop`. Setelah itu, dilanjutkan dengan menekan tombol `Create New Project`.
   3. Menyalin username dan password yang telah diberikan dan kemudian saya simpan pada sebuah file `.txt` di laptop saya.
   4. Menambahkan URL PWS ke dalam list `ALLOWED_HOST` yang berada dalam file `settings.py` pada direktori proyek `easy_shop`. List `ALLOWED_HOST` kini berisi sebagai berikut:
-     ```
+     ```python
      ALLOWED_HOSTS = ["localhost", "127.0.0.1", "muhammad-hibrizi-easyshop.pbp.cs.ui.ac.id"]
      ```
   5. Menjalankan perintah yang berada di PWS
