@@ -175,3 +175,42 @@ Dibuat oleh Muhammad Hibrizi Farghana - 2306165585
         git push pws master
      ```
      Proyek telah berhasil di-_deploy_ dengan menggunakan PWS
+
+### Bagan Request Client ke Web Aplikasi Django
+
+```mermaid
+flowchart TD;
+   A[Client] -- request --> B[urls.py]
+   B -- forward request to appropriate view --> C[views.py]
+   D[models.py] -- returns data --> C
+   E[templates] --> C
+   C --> E
+   C -- read/write data --> D
+   C -- response --> A
+```
+
+### Fungsi git dalam pengembangan perangkat lunak
+
+Git memiliki banyak manfaat dalam pengembangan perangkat lunak. Dari sekian banyak manfaat git, ada 4 manfaat yang saya pikir menjadi alasan terpenting mengapa git digunakan dalam pengembangan perangkat lunak
+
+1. **Version Control**
+
+   Git memungkinkan pengembang untuk menyimpan dan melacak setiap perubahan yang dibuat pada kode. Dengan demikian, pengembang dapat melacak dan kembali ke versi-versi sebelumnya jika diperlukan.
+
+2. **Kolaborasi**
+
+   Git memudahkan pengembang untuk berkolaborasi. Dengan fitur seperti git clone, setiap pengembang dapat saling berkontribusi dan mengembangkan proyek yang terdapat pada Github/Gitlab. Selain itu, terdapat fitur seperti pull request dan merge request yang dapat dengan mudah mengintegrasikan kode dari banyak pengembang.
+
+3. **Branching**
+
+   Branching adalah fitur pada git yang memperbolehkan suatu repository untuk memiliki berbagai cabang / _branch_ yang terpisah dari satu sama yang lainnya. Dengan demikian, masing-masing pengembang dapat fokus mengembangkan suatu fitur di satu _branch_ tanpa takut menggganggu / merusak kode yang berada pada _branch_ utama.
+
+4. **History**
+
+   Git menyimpan histori lengkap dari setiap perubahan yang terjadi pada proyek. Setiap commit mencatat detail perubahan, siapa yang melakukan perubahan, dan kapan perubahan itu dilakukan. Dengan adanya histori ini, pengembang dapat melihat bagaimana sebuah proyek berkembang seiring waktu, dan dapat melacak atau mengembalikan kesalahan dengan mudah. Fitur seperti git log memudahkan untuk melihat jejak histori ini.
+
+### Mengapa framework Django dijadikan permulaan pembelajaran pengembangan perangkat lunak?
+
+- **Python**
+
+### Mengapa model pada Django disebut sebagai ORM?
