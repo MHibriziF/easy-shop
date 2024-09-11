@@ -211,6 +211,16 @@ Git memiliki banyak manfaat dalam pengembangan perangkat lunak. Dari sekian bany
 
 ### Mengapa framework Django dijadikan permulaan pembelajaran pengembangan perangkat lunak?
 
-- **Python**
+1. **Python**
+
+   Framework Django menggunakan bahasa Python. Bahasa Python adalah salah satu bahasa pemrograman yang paling _beginner friendly_ dan populer dikalangan pengembang. Oleh karena itu, penggunaan framework Django cocok digunakan karena menggunakan Python.
+
+2. **Arsitektur Model-View-Template (MVT)**
+
+   Django menggunakan arsitektur MVT yang memisahkan logika bisnis, tampilan, dan data dengan cara yang rapi dan terstruktur. Ini membantu pemula memahami prinsip-prinsip pemrograman yang baik seperti pemisahan kepentingan (separation of concerns), yang sangat penting dalam pengembangan perangkat lunak skala besar.
+
+3. **Dokumentasi yang Komprehensif**
+
+   Django memiliki dokumentasi yang lengkap dan komprehensif yang mudah untuk dipahami pemula. Selain itu, terdapat banyak sekali sumber di internet yang membahas dan menggunakan django sebagai tutorial dalam pembuatan web. Dengan demikian, pemula dapat dengan mudah mengeksplorasi dan memperbaiki masalah yang dialami ketika menggunakan Django.
 
 ### Mengapa model pada Django disebut sebagai ORM?
