@@ -3,10 +3,12 @@ from main.forms import ProductEntryForm
 from main.models import Product
 
 def show_main(request):
+    product_entries = Product.objects.all()
     context = {
         'appname' : 'Easy Shop',
         'nama': 'Muhammad Hibrizi Farghana',
-        'kelas': 'PBP A'
+        'kelas': 'PBP A',
+        'product_entries': product_entries,
     }
 
     return render(request, "main.html", context)
