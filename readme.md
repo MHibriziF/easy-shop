@@ -230,3 +230,19 @@ ORM adalah singkatan dari Object Relational Mapping. ORM atau Object Relational 
 Dalam Django, model adalah representasi dari tabel di database, dan setiap instance dari model tersebut adalah representasi dari baris di tabel. Django ORM memungkinkan kita untuk menulis logika interaksi database menggunakan Python, tanpa perlu menulis SQL secara manual. ORM di Django otomatis mengonversi operasi yang dilakukan pada model menjadi query SQL yang sesuai dan mengirimkannya ke database.
 
 Inilah sebabnya mengapa model di Django disebut sebagai ORM. Django bertindak sebagai penghubung antara objek Python dan database relasional sehingga memungkinkan pengembang untuk bekerja di tingkat yang lebih tinggi tanpa harus berinteraksi langsung dengan SQL.
+
+## Tugas 3
+
+### Screenshot Postman
+
+1. **JSON**
+   ![](images/postman-json.png)
+
+2. **JSON by ID**
+   ![](images/postman-json-id.png)
+
+3. **XML**
+   ![](images/postman-xml.png)
+
+4. **XML by ID**
+   ![](images/postman-xml-id.png)
