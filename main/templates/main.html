@@ -5,5 +5,32 @@
 <p>{{nama}}</p>
 <h3>Kelas</h3>
 <p>{{kelas}}</p>
-{% endblock content %}
 
+{% if not product_entries %}
+  <p>Produk belum tersedia.</p>
+{% else %}
+  <table>
+    <tr>
+      <th>Product Name</th>
+      <th>Price</th>
+      <th>Description</th>
+      <th>Stock</th>
+    </tr>
+
+    {% for product in product_entries %}
+      <tr>
+        <td>{{product.name}}</td>
+        <td>{{product.price}}</td>
+        <td>{{product.description}}</td>
+        <td>{{product.stock}}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  <br />
+
+  <a href="{% url 'main:create_product_entry' %}">
+    <button>Add New Product</button>
+  </a>
+{% endblock content %}
