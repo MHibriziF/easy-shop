@@ -267,66 +267,66 @@ Method `is_valid()` pada form Django berfungsi untuk memeriksa apakah data yang 
 
 - **Membuat input form untuk menambahkan objek model pada app sebelumnya.**
 
-  1. Membuat direktori baru bernama `templates` pada direktori utama
+1. Membuat direktori baru bernama `templates` pada direktori utama
 
-  2. Dalam direktori `templates` di direktori utama, membuat sebuah file `base.html`. Isi dari `base.html` adalah sebagai berikut:
+2. Dalam direktori `templates` di direktori utama, membuat sebuah file `base.html`. Isi dari `base.html` adalah sebagai berikut:
 
-     ```django
-     {% load static %}
+   ```django
+   {% load static %}
 
-      <!DOCTYPE html>
-      <html lang="en">
-         <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            {% block meta %} {% endblock meta %}
-         </head>
+   <!DOCTYPE html>
+   <html lang="en">
+      <head>
+         <meta charset="UTF-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+         {% block meta %} {% endblock meta %}
+      </head>
 
-      <body>
-         {% block content %} {% endblock content %}
-      </body>
-      </html>
-     ```
+   <body>
+      {% block content %} {% endblock content %}
+   </body>
+   </html>
+   ```
 
-  3. Pada direktori `templates` di direktori `main`, memodifikasi `main.html` dengan kode sebagai berikut:
+3. Pada direktori `templates` di direktori `main`, memodifikasi `main.html` dengan kode sebagai berikut:
 
-     ```django
-      {% extends 'base.html' %}
-      {% block content %}
-      <h1>{{appname}}</h1>
-      <h3>Nama</h3>
-      <p>{{nama}}</p>
-      <h3>Kelas</h3>
-      <p>{{kelas}}</p>
-      {% endblock content %}
-     ```
+   ```django
+   {% extends 'base.html' %}
+   {% block content %}
+   <h1>{{appname}}</h1>
+   <h3>Nama</h3>
+   <p>{{nama}}</p>
+   <h3>Kelas</h3>
+   <p>{{kelas}}</p>
+   {% endblock content %}
+   ```
 
-  4. Memodifikasi `models.py` agar memiliki id dengan menggunakan library `uuid`
+4. Memodifikasi `models.py` agar memiliki id dengan menggunakan library `uuid`
 
-     ```python
-     import uuid # Menambahkan library uuid
-     ...
-     class Product(models.Model):
-        id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) # Membuat id
-        ...
-     ```
+   ```python
+   import uuid # Menambahkan library uuid
+   ...
+   class Product(models.Model):
+      id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) # Membuat id
+      ...
+   ```
 
-  5. Melakukan migrasi model dengan perintah
-     ```
-     python manage.py makemigrations
-     python manage.py migrate
-     ```
-  6. Membuat file baru `forms.py` pada direkori `main`, kemudian membuat struktur form pada file tersebut yang diberi nama `ProductEntryForm`. Adapun kkodenya adalah sebagai berikut:
+5. Melakukan migrasi model dengan perintah
+   ```
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+6. Membuat file baru `forms.py` pada direkori `main`, kemudian membuat struktur form pada file tersebut yang diberi nama `ProductEntryForm`. Adapun kkodenya adalah sebagai berikut:
 
-     ```python
-     from django.forms import ModelForm
-     from main.models import Product
+   ```python
+   from django.forms import ModelForm
+   from main.models import Product
 
-     class ProductEntryForm(ModelForm):
-      class Meta:
-         model = Product
-         fields = ["name", "price", "description", "stock"]
-     ```
+   class ProductEntryForm(ModelForm):
+   class Meta:
+      model = Product
+      fields = ["name", "price", "description", "stock"]
+   ```
 
 7. Pada file `views.py` di direktori `main`, mengimpor method `redirect`, class `ProductEntryForm`, class `Product` dan membuat function baru `create_product_entry` untuk menghasilkan form yang dapat menambahkan data product.
 
