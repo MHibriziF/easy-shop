@@ -12,10 +12,10 @@ from main.models import Product
 
 @login_required(login_url='/login')
 def show_main(request):
-    product_entries = Product.objects.all()
+    product_entries = Product.objects.filter(user=request.user)
     context = {
         'appname' : 'Easy Shop',
-        'nama': 'Muhammad Hibrizi Farghana',
+        'nama': request.user.username,
         'kelas': 'PBP A',
         'product_entries': product_entries,
         'last_login': request.COOKIES['last_login'],
@@ -29,11 +29,9 @@ def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            response = HttpResponseRedirect(reverse("main:show_main"))
-            response.set_cookie('last_login', str(datetime.datetime.now()))
-            return response
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
         
     context = {'form':form}
     return render(request, 'register.html', context)
@@ -45,7 +43,9 @@ def login_user(request):
       if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('main:show_main')
+            response = HttpResponseRedirect(reverse("main:show_main"))
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response
 
    else:
       form = AuthenticationForm(request)
@@ -63,8 +63,11 @@ def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
 
     if form.is_valid() and request.method == "POST":
-        form.save()
+        product_entries = form.save(commit=False)
+        product_entries.user = request.user
+        product_entries.save()
         return redirect('main:show_main')
+
 
     context = {'form': form}
     return render(request, "create_product_entry.html", context)
