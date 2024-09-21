@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from main.forms import ProductEntryForm
 from main.models import Product
@@ -42,9 +42,13 @@ def login_user(request):
 
    else:
       form = AuthenticationForm(request)
-      
+
    context = {'form': form}
    return render(request, 'login.html', context)
+
+def logout_user(request):
+    logout(request)
+    return redirect('main:login')
 
 def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
