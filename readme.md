@@ -501,3 +501,284 @@ Method `is_valid()` pada form Django digunakan untuk memeriksa apakah data yang 
    ![](images/postman-xml-id.png)
 
 </details>
+
+<details>
+<summary><h2><b>Tugas 4</b> (click to expand)</h2></summary>
+
+## Implementasi Checklist secara step-by-step
+
+### Mengimplementasikan fungsi registrasi, login, dan logout
+
+1. Menambahkan _import-import_ berikut pada `views.py` di direktori aplikasi main
+
+   ```python
+   from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+   from django.contrib.auth.decorators import login_required
+   from django.contrib.auth import authenticate, login, logout
+   from django.contrib import messages
+   ```
+
+2. Menambahkan fungsi `register`
+
+   ```python
+   def register(request):
+      form = UserCreationForm()
+
+      if request.method == "POST":
+         form = UserCreationForm(request.POST)
+         if form.is_valid():
+               form.save()
+               messages.success(request, 'Your account has been successfully created!')
+               return redirect('main:login')
+
+      context = {'form':form}
+      return render(request, 'register.html', context)
+   ```
+
+3. Menambahkan fungsi `login_user`
+
+   ```python
+   def login_user(request):
+      if request.method == 'POST':
+         form = AuthenticationForm(data=request.POST)
+
+         if form.is_valid():
+               user = form.get_user()
+               login(request, user)
+               return redirect('main:show_main')
+
+      else:
+         form = AuthenticationForm(request)
+
+      context = {'form': form}
+      return render(request, 'login.html', context)
+   ```
+
+4. Menambahkan fungsi `logout`
+
+   ```python
+   def logout_user(request):
+      logout(request)
+      return redirect('main:login')
+   ```
+
+5. Pada `templates` di direktori aplikasi `main`, menambahkan file html baru `register.html`
+   ```django
+   {% extends 'base.html' %}
+   {% block meta %}
+   <title>Register</title>
+   {% endblock meta %}
+   {% block content %}
+   <div class="login">
+      <h1>Register</h1>
+      <form method="POST">
+         {% csrf_token %}
+         <table>
+            {{ form.as_table }}
+            <tr>
+            <td></td>
+            <td><input type="submit" name="submit" value="Daftar" /></td>
+            </tr>
+         </table>
+      </form>
+      {% if messages %}
+      <ul>
+         {% for message in messages %}
+         <li>{{ message }}</li>
+         {% endfor %}
+      </ul>
+      {% endif %}
+   </div>
+   {% endblock content %}
+   ```
+6. Pada `templates` di direktori aplikasi main, menambahkan file html baru `login.html`
+
+   ```django
+   {% extends 'base.html' %}
+   {% block meta %}
+   <title>Login</title>
+   {% endblock meta %}
+   {% block content %}
+   <div class="login">
+      <h1>Login</h1>
+      <form method="POST" action="">
+         {% csrf_token %}
+         <table>
+            {{ form.as_table }}
+            <tr>
+            <td></td>
+            <td><input class="btn login_btn" type="submit" value="Login" /></td>
+            </tr>
+         </table>
+      </form>
+      {% if messages %}
+      <ul>
+         {% for message in messages %}
+         <li>{{ message }}</li>
+         {% endfor %}
+      </ul>
+      {% endif %} Don't have an account yet?
+      <a href="{% url 'main:register' %}">Register Now</a>
+   </div>
+   {% endblock content %}
+   ```
+
+7. Agar user perlu login sebelum mengakses halaman utama, menambahkan decorator `@login_required` sebelum fungsi show main
+
+```python
+...
+@login_required(login_url='/login')
+def show_main(request):
+   ...
+...
+```
+
+8. Melakukan routings pada fungsi-fungsi sebelumnya dengan melakukan modifikasi di `urls.py` direktori aplikasi `main`
+
+   ```python
+   from django.urls import path
+   from main.views import *   # Import semua di views.py aplikasi main
+
+   app_name = 'main'
+
+   urlpatterns = [
+      ...
+      path('register/', register, name="register"),  # menambahkan path register
+      path('login/', login_user, name='login'),      # menambahkan path login
+      path('logout/', logout_user, name='logout')    # menambahkan path logout
+   ]
+   ```
+
+### Membuat dua akun pengguna dengan masing-masing tiga dummy data
+
+1. Menjalankan perintah berikut untuk mengaktifkan _local server_
+
+   ```
+   python manage.py runserver
+   ```
+
+2. Membuka url `localhost:8000`
+3. Menekan teks _register now_
+4. Memasukkan data akun baru kemudian klik tombol daftar
+5. Melakukan langkah 3 dan 4 satu kali lagi untuk membuat dua akun
+6. Login ke akun pertama
+7. Menekan tombol `Add New Product` dan memasukkan dummy data produk kemudian menekan tombol `Add Product`
+8. Mengulangi langkah ke-7 hingga ada 3 dummy data produk
+9. Melakukan logout dengan menekan tombol `logout`
+10. Login ke akun kedua kemudian melakukan hal yang sama pada langkah ke-7 hingga ke-9
+
+### Menghubungkan model `Product` dengan` User`
+
+1.  Menambahkan _import-import_ berikut pada file `models.py` di direktori aplikasi `main`
+
+    ```python
+    from django.contrib.auth.models import User
+    ```
+
+2.  Pada class `Product`, menambahkan line berikut
+    ```python
+    ...
+    class Product(models.Model):
+       user = models.ForeignKey(User, on_delete=models.CASCADE) # Tambahkan
+       ...
+    ```
+3.  Pada file `views.py` aplikasi `main`, mengubah variabel `product_entries`
+
+    ```python
+    ...
+    def show_main(request):
+       product_entries = Product.objects.filter(user=request.user) # Ubah menjadi seperti ini
+       ...
+    ```
+
+4.  Pada function `create_product_entry`, modifikasi kode dalam blok if
+
+    ```python
+    def create_product_entry(request):
+      form = ProductEntryForm(request.POST or None)
+
+      if form.is_valid() and request.method == "POST":
+         product_entries = form.save(commit=False)
+         product_entries.user = request.user
+         product_entries.save()
+         return redirect('main:show_main')
+      ...
+    ```
+
+### Menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan `cookies`
+
+1. Pada `views.py` aplikasi `main`, menambahkan _import-import_ berikut
+
+   ```python
+   import datetime
+   from django.http import HttpResponse, HttpResponseRedirect
+   from django.urls import reverse
+   ```
+
+2. Pada fungsi `login_user`, memodifikasi kode dalam blok `if form.is_valid()` menjadi seperti berikut:
+
+   ```python
+   def login_user(request):
+      if request.method == 'POST':
+         form = AuthenticationForm(data=request.POST)
+
+         if form.is_valid():
+               user = form.get_user()
+               login(request, user)
+               response = HttpResponseRedirect(reverse("main:show_main"))
+               response.set_cookie('last_login', str(datetime.datetime.now()))
+               return response
+         ...
+   ```
+
+3. Memodifikasi fungsi `logout_user`
+
+   ```python
+   def logout_user(request):
+      logout(request)
+      response = HttpResponseRedirect(reverse('main:login'))
+      response.delete_cookie('last_login')
+      return response
+   ```
+
+4. Mengubah value `nama` pada variabel `context` di fungsi `show_main` dan menambahkan `last_login`
+
+   ```python
+   def show_main(request):
+      product_entries = Product.objects.filter(user=request.user)
+      context = {
+         'appname' : 'Easy Shop',
+         'nama': request.user.username, # ubah jadi request.user.username
+         'kelas': 'PBP A',
+         'product_entries': product_entries,
+         'last_login': request.COOKIES['last_login'], # Menambahkan last_login
+      }
+   ```
+
+5. Menambahkan kode berikut dalam file `main.html` di `templates` aplikasi main, setelah tombol _logout_
+
+   ```django
+   ...
+   <h5>Sesi terakhir login: {{ last_login }}</h5>
+   ...
+   ```
+
+6. Melakukan migrasi model dengan perintah `python manage.py makemigrations`. Setelah menjalankan perintah tersebut akan diminta input, masukkan semua input dengan `1`. Setelah itu migrasi dengan `python manage.py migrate`
+
+## Perbedaan antara HttpResponseRedirect() dan redirect()
+
+Dari dokumentasi Django, fungsi `redirect()`sebenarnya mengembalikan `HttpResponseRedirect` kepada URL yang dimasukkan juga, tetapi fungsi `redirect()` juga dapat menerima _argument_ model dan view. Hal ini berbeda dengan `HttpResponseRedirect` yang hanya menerima _argument_ URL. Jadi, fungsi `redirect()` adalah versi yang lebih "fleksibel" dari `HttpResponseRedirect` karena dapat menerima lebih banyak jenis _argument_.
+
+## Cara kerja penghubungan model Product dengan User!
+
+Penghubungan model `Product` dengan `User` dilakukan melalui penggunaan _foreign key_. Dengan menambahkan _field_ `user = models.ForeignKey(User, on_delete=models.CASCADE)` pada suatu model, model tersebut akan menjadi terhubung dengan user. _foreign key_ memungkinkan setiap produk dikaitkan dengan pengguna yang telah terdaftar dalam sistem. Dengan _foreign key_, kita bisa mengetahui siapa pengguna yang membuat atau memiliki produk tersebut, serta dapat melakukan filter produk berdasarkan pengguna.
+
+## Perbedaan antara authentication dan authorization dan cara implementasinya oleh Django
+
+_Authentication_ adalah proses verifikasi identitas pengguna, misalnya dengan username dan password, sedangkan _authorization_ menentukan apa yang boleh diakses oleh pengguna setelah identitasnya diverifikasi. Dalam Django, proses ini dilakukan menggunakan fungsi `authenticate()` dan `login()` yang tersedia dalam modul `django.contrib.auth`. Metode `authenticate()` menerima kredensial dan kemudian memvalidasinya. Jika valid, fungsi akan mengembalikan objek User yang sesuai. Setelah pengguna telah terverifikasi, metode `login()` digunakan untuk memulai sesi pengguna dengan menyimpan informasinya dalam `request`. Untuk _authorization_, Django telah menyediakan _permissions_ yang bisa diatur untuk sebuah objek. Dengan menggunakan method `has_view_permission()`, `has_add_permission()`, `has_change_permission()` dan `has_delete_permission()`pada class `ModelAdmin`, hal ini memungkinkan untuk memberikan _authorization_ sesuai dengan user yang kita inginkan.
+
+## Bagaimana Django mengingat pengguna yang telah login?
+
+Django mengingat pengguna yang telah login dengan menggunakan sesi yang disimpan dalam `cookies`. Setiap kali pengguna mengakses halaman baru, Django memeriksa `cookies` untuk melihat apakah ada sesi yang aktif. Selain untuk sesi login, `cookies` juga dapat digunakan untuk menyimpan preferensi pengguna, melacak aktivitas pengguna, atau untuk menyimpan data sementara. Akan tetapi, tidak semua `cookies` aman digunakan. `Cookies` yang tidak dienkripsi atau tidak diberi perlindungan tambahan, berpotensi untuk terkena serangan, seperti _cross-site scripting_ (XSS) atau pencurian data.
+
+</details>
