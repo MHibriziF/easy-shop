@@ -7,7 +7,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from main.forms import ProductEntryForm
+from main.forms import ProductEntryForm, LoginForm
 from main.models import Product
 
 @login_required(login_url='/login')
@@ -38,7 +38,7 @@ def register(request):
 
 def login_user(request):
    if request.method == 'POST':
-      form = AuthenticationForm(data=request.POST)
+      form = LoginForm(data=request.POST)
 
       if form.is_valid():
             user = form.get_user()
@@ -48,7 +48,7 @@ def login_user(request):
             return response
 
    else:
-      form = AuthenticationForm(request)
+      form = LoginForm(request)
 
    context = {'form': form}
    return render(request, 'login.html', context)
