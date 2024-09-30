@@ -2,7 +2,7 @@ import datetime
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core import serializers
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -63,9 +63,9 @@ def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
 
     if form.is_valid() and request.method == "POST":
-        product_entries = form.save(commit=False)
-        product_entries.user = request.user
-        product_entries.save()
+        product_entry= form.save(commit=False)
+        product_entry.user = request.user
+        product_entry.save()
         return redirect('main:show_main')
 
 
@@ -73,7 +73,7 @@ def create_product_entry(request):
     return render(request, "create_product_entry.html", context)
 
 def edit_product(request, id):
-    product = Product.objects.get(pk = id)
+    product = Product.objects.get(pk=id)
     form = ProductEntryForm(request.POST or None, instance=product)
 
     if form.is_valid() and request.method == "POST":
