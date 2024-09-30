@@ -83,6 +83,11 @@ def edit_product(request, id):
     context = {'form': form}
     return render(request, "edit_product.html", context)
 
+def delete_product(request, id):
+    product = Product.objects.get(pk=id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
+
 def show_xml(request):
     data = Product.objects.all()
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
