@@ -3,13 +3,13 @@
 {% include 'navbar.html' %}
 
 
-<div class="flex justify-center space-x-[3rem] md:space-x-[20rem] m-6 mb-10">
-  <div class="flex">
+<div class="flex justify-center space-x-[3rem] md:space-x-[20rem] m-6 mb-10 text-white">
+  <div class="flex bg-gray-700/80 rounded-md p-2">
     <h5 class="font-semibold">Name:</h5>
     <p class="ml-2">{{ nama }}</p>
   </div>
 
-  <div class="flex">
+  <div class="flex bg-gray-700/80 rounded-md p-2">
     <h5 class="font-semibold">Class:</h5>
     <p class="ml-2">{{ kelas }}</p>
   </div>
@@ -25,17 +25,24 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 break-words">
     {% for product in product_entries %}
       <div class="max-w-sm p-6 rounded-lg shadow bg-gray-800/80">
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ product.name }}</h5>
+        <h5 class="mb-2 text-2xl font-bold text-gray-900 text-white">{{ product.name }}</h5>
+        <hr class="border-gray-300 border-2 my-2 rounded-sm">
         <p class="mb-3 text-gray-300">
-          Price: Rp{{ product.price }}
+            {{ product.description }}
         </p>
-        <p class="mb-3 text-gray-300">
-          Description: {{ product.description }}
-        </p>
-        <p class="mb-3 text-gray-300">
-          Stock: {{ product.stock }}
-        </p>
-        <div class="flex mt-auto space-x-4">
+
+        <hr class="border-gray-300 my-2 rounded-sm">
+        <div class="flex">
+          <p class="mb-3 text-gray-300">
+            Stock: {{ product.stock }}
+          </p>
+          <p class="mb-3 text-gray-300 ml-auto">
+            Rp{{ product.price }}
+          </p>
+        </div>
+        <hr class="border-gray-300 mb-2 rounded-sm">
+
+        <div class="flex space-x-4 mt-auto">
           <a href="{% url 'main:edit_product' product.pk %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Edit
           </a>
@@ -44,18 +51,19 @@
           </a>
         </div>
       </div>
+      
     {% endfor %}
   </div>  
 {% endif %}
   <br />
   <div class="flex justify-center">
     <a href="{% url 'main:create_product_entry' %}">
-      <button class="bg-[#489CC1] rounded-lg px-4 py-2 text-white font-semibold hover:bg-blue-100 hover:font-semibold transition duration-200 ease-in-out">
+      <button class="bg-[#489CC1] text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer">
         Add New Product
       </button>
     </a>
   </div>
   
 
-  <h5 class="mt-5">Sesi terakhir login: {{ last_login }}</h5>
+  <h5 class="mt-5 ml-8">Sesi terakhir login: {{ last_login }}</h5>
 {% endblock content %}

@@ -18,16 +18,17 @@
         <a href="{% url 'main:show_main' %}" class="hover:text-cyan-100">Home</a>
       </li>
       <li class="mx-4 md:my-0 md:static my-4">
-        <a href="#about-me" class="hover:text-cyan-100">Products</a>
+        <a href="" class="hover:text-cyan-100">Products</a>
       </li>
       <li class="mx-4 md:my-0 md:static my-4">
-        <a href="#projects" class="hover:text-cyan-100">Categories</a>
+        <a href="" class="hover:text-cyan-100">Categories</a>
       </li>
       <li class="mx-4 md:my-0 md:static my-4">
-        <a href="#socials" class="hover:text-cyan-100">Carts</a>
+        <a href="" class="hover:text-cyan-100">Carts</a>
       </li>
+      <p class="ml-24">Welcome, {{ user.username }}</p>
       <li class="mx-4 md:my-0 md:static my-4"> 
-        <a href="{% url 'main:logout' %}" class="bg-red-600 rounded-md px-4 py-2">
+        <a href="{% url 'main:logout' %}" class="bg-red-600 rounded-md px-4 py-2 hover:bg-red-900 transition duration-200 ease-in-out">
             <button >Logout</button>
         </a>
       </li>

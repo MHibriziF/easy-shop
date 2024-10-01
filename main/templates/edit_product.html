@@ -3,19 +3,29 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<h1>Edit Product</h1>
+<div class="flex justify-center">
+  <div class="bg-[#43A680]/50 shadow-md rounded-lg w-[20rem] md:w-[32rem] p-4 my-8">
+    <h1 class="text-2xl font-bold mb-6 text-center text-white">Edit Product</h1>
 
-<form method="POST">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-        <tr>
-            <td></td>
-            <td>
-                <input type="submit" value="Edit Product"/>
-            </td>
-        </tr>
-    </table>
-</form>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="space-y-4">
+        {% for field in form %}
+          <div class="flex flex-col">
+            <label for="{{ field.id_for_label }}" class="mb-1 font-semibold text-gray-700">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <p class="text-red-500 text-sm mt-1">{{ field.errors }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="flex justify-center mt-6">
+        <input type="submit" value="Edit Product" class="bg-[#489CC1] text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer"/>
+      </div>
+    </form>
+  </div>
+</div>
 
 {% endblock %}
