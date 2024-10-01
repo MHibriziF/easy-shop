@@ -11,11 +11,21 @@
     <form method="POST" action="">
       {% csrf_token %}
       <table class="w-full">
-        {{ form.as_table }}
+        <input type="hidden" name="remember" value="true">
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="username" class="sr-only">Username</label>
+            <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Username">
+          </div>
+          <div>
+            <label for="password" class="sr-only">Password</label>
+            <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
+          </div>
+        </div>
         <tr>
           <td colspan="2" class="text-center">
             <input
-              class="py-2 px-4 bg-green-700 mt-6 text-white w-32 rounded-lg hover:bg-green-800 transition"
+              class="w-full py-2 px-4 bg-green-700 mt-6 text-white w-32 rounded-lg hover:bg-green-800 transition"
               type="submit" value="Login" />
           </td>
         </tr>
