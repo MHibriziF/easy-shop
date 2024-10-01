@@ -1,7 +1,7 @@
 <header class="backdrop-blur-sm bg-[#16423C]/30 text-white font-poppins sticky top-0 z-10">
   <nav class="p-5 md:flex md:items-center md:justify-between">
     <span class="text-2xl font-bold">
-      <a href="#">Easy Shop</a>
+      <a href="{% url 'main:show_main' %}">Easy Shop</a>
     </span>
     
     <input class="peer hidden" type="checkbox" id="navbar-open">
@@ -15,7 +15,7 @@
 
     <ul aria-label="Header Navigation" class="md:flex md:peer-checked:flex peer-checked:inline hidden">
       <li class="mx-4 md:my-0 md:static my-4">
-        <a href="#" class="hover:text-cyan-100">Home</a>
+        <a href="{% url 'main:show_main' %}" class="hover:text-cyan-100">Home</a>
       </li>
       <li class="mx-4 md:my-0 md:static my-4">
         <a href="#about-me" class="hover:text-cyan-100">Products</a>
