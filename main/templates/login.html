@@ -42,10 +42,10 @@
     </form>
 
     {% if messages %}
-      <div class="p-4 mt-4">
+      <div class="p-4 mt-4 bg-white/50 rounded-md">
         <ul>
           {% for message in messages %}
-            <li class="text-red-600">{{ message }}</li>
+            <li class="text-green-600 font-bold">{{ message }}</li>
           {% endfor %}
         </ul>
       </div>
