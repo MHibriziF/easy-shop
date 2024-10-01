@@ -1,6 +1,6 @@
-<header class="backdrop-blur-sm bg-black/30 text-white font-poppins sticky top-0 z-10">
+<header class="backdrop-blur-sm bg-[#16423C]/30 text-white font-poppins sticky top-0 z-10">
   <nav class="p-5 md:flex md:items-center md:justify-between">
-    <span class="text-2xl">
+    <span class="text-2xl font-bold">
       <a href="#">Easy Shop</a>
     </span>
     
@@ -18,20 +18,19 @@
         <a href="#" class="hover:text-cyan-100">Home</a>
       </li>
       <li class="mx-4 md:my-0 md:static my-4">
-        <a href="#about-me" class="hover:text-cyan-100">About</a>
+        <a href="#about-me" class="hover:text-cyan-100">Products</a>
       </li>
       <li class="mx-4 md:my-0 md:static my-4">
-        <a href="#projects" class="hover:text-cyan-100">Projects</a>
+        <a href="#projects" class="hover:text-cyan-100">Categories</a>
       </li>
       <li class="mx-4 md:my-0 md:static my-4">
-        <a href="#socials" class="hover:text-cyan-100">Socials</a>
+        <a href="#socials" class="hover:text-cyan-100">Carts</a>
       </li>
-      <li> 
-        <a href="{% url 'main:logout' %}">
-            <button>Logout</button>
+      <li class="mx-4 md:my-0 md:static my-4"> 
+        <a href="{% url 'main:logout' %}" class="bg-red-600 rounded-md px-4 py-2">
+            <button >Logout</button>
         </a>
       </li>
-
     </ul>
   </nav>
 </header>
