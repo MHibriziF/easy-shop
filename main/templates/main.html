@@ -22,44 +22,35 @@
     <img src="https://media.tenor.com/l3BF03rFfh0AAAAM/bestcry-sad.gif" alt="crying man gif" class="rounded-full">
   </div>
 {% else %}
-  <table>
-    <tr>
-      <th>Product Name</th>
-      <th>Price</th>
-      <th>Description</th>
-      <th>Stock</th>
-    </tr>
-
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 break-words">
     {% for product in product_entries %}
-      <tr>
-        <td>{{product.name}}</td>
-        <td>{{product.price}}</td>
-        <td>{{product.description}}</td>
-        <td>{{product.stock}}</td>
-        <td>
-          <a href="{% url 'main:edit_product' product.pk %}">
-              <button>
-                  Edit
-              </button>
+      <div class="max-w-sm p-6 rounded-lg shadow bg-gray-800/80">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ product.name }}</h5>
+        <p class="mb-3 text-gray-300">
+          Price: Rp{{ product.price }}
+        </p>
+        <p class="mb-3 text-gray-300">
+          Description: {{ product.description }}
+        </p>
+        <p class="mb-3 text-gray-300">
+          Stock: {{ product.stock }}
+        </p>
+        <div class="flex mt-auto space-x-4">
+          <a href="{% url 'main:edit_product' product.pk %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            Edit
           </a>
-        </td>
-        <td>
-          <a href="{% url 'main:delete_product' product.pk %}">
-              <button>
-                  Delete
-              </button>
+          <a href="{% url 'main:delete_product' product.pk %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+            Delete
           </a>
-        </td>
-      </tr>
+        </div>
+      </div>
     {% endfor %}
-  </table>
-  {% endif %}
-
+  </div>  
+{% endif %}
   <br />
-
   <div class="flex justify-center">
     <a href="{% url 'main:create_product_entry' %}">
-      <button class="bg-[#489CC1] rounded-lg px-4 py-2 font-bold hover:bg-blue-100 hover:font-semibold transition duration-200 ease-in-out">
+      <button class="bg-[#489CC1] rounded-lg px-4 py-2 text-white font-semibold hover:bg-blue-100 hover:font-semibold transition duration-200 ease-in-out">
         Add New Product
       </button>
     </a>
