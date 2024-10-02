@@ -782,3 +782,144 @@ _Authentication_ adalah proses verifikasi identitas pengguna, misalnya dengan us
 Django mengingat pengguna yang telah login dengan menggunakan sesi yang disimpan dalam `cookies`. Setiap kali pengguna mengakses halaman baru, Django memeriksa `cookies` untuk melihat apakah ada sesi yang aktif. Selain untuk sesi login, `cookies` juga dapat digunakan untuk menyimpan preferensi pengguna, melacak aktivitas pengguna, atau untuk menyimpan data sementara. Akan tetapi, tidak semua `cookies` aman digunakan. `Cookies` yang tidak dienkripsi atau tidak diberi perlindungan tambahan, berpotensi untuk terkena serangan, seperti _cross-site scripting_ (XSS) atau pencurian data.
 
 </details>
+
+<details>
+<summary><h2><b>Tugas 5</b> (click to expand)</h2></summary>
+
+## Implementasi Checklist secara step-by-step
+
+### Implementasikan fungsi untuk menghapus dan mengedit product.
+
+1. Pada file `views.py` dalam direktori `main`, menambahkan 2 fungsi berikut
+
+   ```python
+   def edit_product(request, id):
+      product = Product.objects.get(pk=id)
+      form = ProductEntryForm(request.POST or None, instance=product)
+
+      if form.is_valid() and request.method == "POST":
+         form.save()
+         return HttpResponseRedirect(reverse('main:show_main'))
+
+      context = {'form': form}
+      return render(request, "edit_product.html", context)
+
+   def delete_product(request, id):
+      product = Product.objects.get(pk=id)
+      product.delete()
+      return HttpResponseRedirect(reverse('main:show_main'))
+   ```
+
+2. Pada `urls.py` di direktori `main`, menambahkan _routing_ untuk kedua fungsi sebelumnya
+
+   ```python
+   urlpatterns = [
+      ...
+      path('edit-product/<uuid:id>', edit_product, name='edit_product'),
+      path('delete/<uuid:id>', delete_product, name='delete_product'),
+      ...
+   ]
+   ```
+
+### Kustomisasi desain pada template HTML
+
+1. Menambahkan _script tailwind_ dan _font custom_ pada `base.html`
+
+   ```html
+   <script src="https://cdn.tailwindcss.com"></script>
+   <link rel="preconnect" href="https://fonts.googleapis.com" />
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+   <link
+     href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+     rel="stylesheet"
+   />
+   ```
+
+2. Mengkustomisasi bagian _body_ `base.html` untuk menampilkan _background_ sesuai gaya yang saya inginkan
+
+3. Mengkustomisasi `login.html`, `register.html`, `main.html`, `create_product.html`, dan `edit_product.html`, sesuai dengan gaya yang saya inginkan dengan mengkustomiasasi bagian `class` dari tag html yang ingin diberi gaya
+
+4. Pada `main.html`, akan menampilkan sebuah gambar/gif, jika belum ada product. Hal ini saya capai dengan menambahkan tag `<img>`
+
+5. Menampilkan detail produk dengan membuat sebuah _card_. Hal ini saya capai dengan membungkus detail produk dalam suatu elemen `<div></div>` yang kemudian saya beri gaya dengan _tailwind_
+
+6. Pada tiap _card_ produk, menambahkan tombol _edit_ dan _delete_ melalui tag `<a></a>` dengan kustomisasi yang saya inginkan.
+
+### Membuat navbar
+
+1. Membuat file `navbar.html` pada direktori `templates` di root folder
+
+2. Menambahkan kode html dan class _tailwind_ yang saya inginkan untuk navbar.
+
+3. Memastikan navbar responsif melalui _chrome developer tools_
+
+4. Menambahkan navbar pada `main.html`, `create_product.html`, dan `edit_product.html` dengan _template tag_ django `{% include 'navbar.html' %}`
+
+## Urutan prioritas pengambilan CSS _selector_
+
+Urutan prioritas pengambilan CSS selector dilihat dari nilai _specificity_. Selector dengan nilai _specificity_ lebih tinggi lah yang akan terlebih dahulu diterapkan gayanya.
+
+Ada 4 kategori yang mendefinisikan _specificity_ CSS _selector_
+
+1. Inline styles - contoh: `<h1 style="color: pink;">`
+2. IDs - Contoh: `#navbar`
+3. Classes, pseudo-classes, attribute selectors - contoh: `.test, :hover, [href]`
+4. Elements and pseudo-elements - contoh: `h1, ::before`
+
+Berikut adalah langkah untuk menghitung nilai _specificity_.
+
+Mulai dari 0, tambahkan 100 untuk setiap nilai ID, tambahkan 10 untuk setiap nilai _class_ (atau pemilih _pseudo class_ atau selektor atribut), tambahkan 1 untuk setiap selektor elemen atau _pseudo element_.
+Jika terdapat nilai _specificity_ yang sama, maka aturan yang paling akhir ditulis lah yang berlaku.
+
+Catatan:
+Inline style mendapatkan nilai _specificity_ 1000 dan selalu diberikan prioritas tertinggi. Akan tetapi, terdapay pengecualian pada aturan ini jika diterapkan aturan `important!`.
+
+## Mengapa _responsive design_ penting
+
+_Responsive design_ penting agar dapat memberikan pengalaman yang terbaik untuk setiap pengguna. Tanpa _responsive design_, beberapa pengguna mungkin akan kesulitan menggunakan aplikasi karena tampilan yang tidak sesuai dengan perangkat mereka. Akibatnya, jumlah pengguna aplikasi bisa menurun karena pengalaman yang kurang memadai.
+
+Contoh aplikasi yang telah menerapkan _responsive design_ : YouTube / https://www.youtube.com
+
+Contoh aplikasi yang belum menerapkan _responsive design_ : SIAK NG / https://academic.ui.ac.id
+
+## _margin_, _border_, dan _padding_
+
+Margin adalah atribut CSS yang mengatur jarak suatu elemen html di luar _bordernya_
+
+Implementasi:
+
+```css
+target-element {
+  margin: 25px 50px 75px 100px;
+}
+```
+
+Border adalah atribut CSS yang mengatur bagian terluar dari suatu elemen html
+
+Implementasi:
+
+```css
+target-element {
+  border: 5px solid red;
+}
+```
+
+Padding adalah atribut CSS yang mengatur jarak konten html / _child_ elemen html terhadap _border parentnya_ sendiri
+
+Implementasi:
+
+```css
+target-element {
+  margin: 25px 50px 75px 100px;
+}
+```
+
+## _flex box_ dan _grid layout_
+
+_Flex box_ dan _grid layout_ adalah dua teknik CSS yang digunakan untuk mengatur _layout_ elemen dalam halaman web.
+
+_Flex box_ adalah model _layout_ satu dimensi untuk mengatur elemen-elemen html pada satu baris ataupun kolom. Hal ini membuat _flex box_ sangat berguna dalam membuat _layout_ seperti _navbar_ dan sejenisnya.
+
+_Grid layout_ adalah model layout dua dimensi untuk mengatur elemen-elemen html pada suatu _grid_ dengan jumlah baris dan kolom tertentu. Berbeda dengan _flex box_ yang hanya dapat mengatur elemen dalam sebuah kolom dan baris, _grid_ dapat mengatur elemen untuk diposisikan pada suatu grid di baris dan kolom yang kita inginkan. Hal ini membuat _flex box_ sangat berguna dalam membuat _layout_ seperti Mondrian _art_ dan sebagainya.
+
+</details>
