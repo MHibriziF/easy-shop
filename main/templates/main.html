@@ -9,27 +9,50 @@
 </div>
 
 
-{% if not product_entries %}
-  <div class="flex flex-col items-center justify-center">
-    <p class="font-bold text-center mb-6">Produk belum tersedia 😢.</p>
-    <img src="https://media.tenor.com/l3BF03rFfh0AAAAM/bestcry-sad.gif" alt="crying man gif" class="rounded-full">
-  </div>
-{% else %}
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 break-words">
-    {% for product in product_entries %}
-      {% include 'card_product.html' with product=product %}
-    {% endfor %}
-  </div>  
-{% endif %}
-  <br />
-  <div class="flex justify-center">
-    <a href="{% url 'main:create_product_entry' %}">
-      <button class="bg-[#489CC1] text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer">
-        Add New Product
-      </button>
-    </a>
-  </div>
+<div id="product_entry_cards"></div>
+
+<br />
+<div class="flex justify-center">
+  <a href="{% url 'main:create_product_entry' %}">
+    <button class="bg-[#489CC1] text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer">
+      Add New Product
+    </button>
+  </a>
+</div>
   
 
-  <h5 class="mt-5 ml-8">Sesi terakhir login: {{ last_login }}</h5>
+<h5 class="mt-5 ml-8">Sesi terakhir login: {{ last_login }}</h5>
+
+<script>
+  async function getProductEntries(){
+      return fetch("{% url 'main:show_json' %}").then((res) => res.json())
+  }
+
+  async function refreshProductEntries() {
+    document.getElementById("product_entry_cards").innerHTML = "";
+    document.getElementById("product_entry_cards").className = "";
+    const productEntries = await getProductEntries();
+    let htmlString = "";
+    let classNameString = "";
+
+    if (productEntries.length === 0) {
+      classNameString = "flex flex-col items-center justify-center";
+      htmlString = `
+      <p class="font-bold text-center mb-6">Produk belum tersedia 😢.</p>
+      <img src="https://media.tenor.com/l3BF03rFfh0AAAAM/bestcry-sad.gif" alt="crying man gif" class="rounded-full">
+      `;
+    } else {
+      classNameString = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 break-words";
+      productEntries.forEach((product) => {
+        htmlString += `
+           {% include 'card_product.html' with product=product %}
+        `;
+      }); 
+    }
+
+    document.getElementById("product_entry_cards").className = classNameString;
+    document.getElementById("product_entry_cards").innerHTML = htmlString;
+  }
+  refreshProductEntries();
+</script>
 {% endblock content %}

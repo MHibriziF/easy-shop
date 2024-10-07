@@ -14,12 +14,10 @@ from main.models import Product
 
 @login_required(login_url='/login')
 def show_main(request):
-    product_entries = Product.objects.filter(user=request.user)
     context = {
         'appname' : 'Easy Shop',
         'nama': request.user.username,
         'kelas': 'PBP A',
-        'product_entries': product_entries,
         'last_login': request.user.last_login,
     }
 
@@ -85,7 +83,7 @@ def add_product_ajax(request):
     stock= request.POST.get("stock")
     user = request.user
 
-    new_product = ProductEntryForm(
+    new_product = Product(
         name=name, price=price,
         description=description,
         stock=stock, user=user
@@ -111,11 +109,11 @@ def delete_product(request, id):
     return HttpResponseRedirect(reverse('main:show_main'))
 
 def show_xml(request):
-    data = Product.objects.all()
+    data = Product.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    data = Product.objects.all()
+    data = Product.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_xml_by_id(request, id):
