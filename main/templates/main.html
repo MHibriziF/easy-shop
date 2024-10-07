@@ -4,15 +4,8 @@
 
 
 <div class="flex justify-center space-x-[3rem] md:space-x-[20rem] m-6 mb-10 text-white">
-  <div class="flex bg-gray-700/80 rounded-md p-2">
-    <h5 class="font-semibold">Name:</h5>
-    <p class="ml-2">{{ nama }}</p>
-  </div>
-
-  <div class="flex bg-gray-700/80 rounded-md p-2">
-    <h5 class="font-semibold">Class:</h5>
-    <p class="ml-2">{{ kelas }}</p>
-  </div>
+  {% include 'card_info.html' with info='Nama:' value=nama %}
+  {% include 'card_info.html' with info='Kelas:' value=kelas %}
 </div>
 
 
