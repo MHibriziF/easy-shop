@@ -10,23 +10,81 @@
 
 
 <div id="product_entry_cards"></div>
+{% include 'modal.html' %}
 
 <br />
-<div class="flex justify-center">
+<div class="flex justify-evenly">
   <a href="{% url 'main:create_product_entry' %}">
     <button class="bg-[#489CC1] text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer">
       Add New Product
     </button>
-  </a>
+
+  </a>    
+  <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-[#489CC1] text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer" onclick="showModal();">
+      Add New Product by AJAX
+  </button>
 </div>
   
 
 <h5 class="mt-5 ml-8">Sesi terakhir login: {{ last_login }}</h5>
 
 <script>
+  function addProductEntry() {
+    fetch("{% url 'main:create_ajax' %}", {  
+        method: "POST",
+        body: new FormData(document.querySelector('#productEntryForm')), 
+    })
+    .then(response => {
+        if (response.ok) {
+            refreshProductEntries();
+            document.getElementById("productEntryForm").reset();
+            hideModal(); 
+        } else {
+            console.error("Error adding product entry:", response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error("Network error:", error);
+    });
+  }
+
+  document.getElementById("productEntryForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    addProductEntry(); 
+  });
+
   async function getProductEntries(){
       return fetch("{% url 'main:show_json' %}").then((res) => res.json())
   }
+
+  const modal = document.getElementById('crudModal');
+  const modalContent = document.getElementById('crudModalContent');
+
+  function showModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modal.classList.remove('hidden'); 
+      setTimeout(() => {
+        modalContent.classList.remove('opacity-0', 'scale-95');
+        modalContent.classList.add('opacity-100', 'scale-100');
+      }, 50); 
+  }
+
+  function hideModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modalContent.classList.remove('opacity-100', 'scale-100');
+      modalContent.classList.add('opacity-0', 'scale-95');
+
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 150); 
+  }
+
+  document.getElementById("cancelButton").addEventListener("click", hideModal);
+  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
 
   async function refreshProductEntries() {
     document.getElementById("product_entry_cards").innerHTML = "";

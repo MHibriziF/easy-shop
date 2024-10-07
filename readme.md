@@ -923,3 +923,26 @@ _Flex box_ adalah model _layout_ satu dimensi untuk mengatur elemen-elemen html 
 _Grid layout_ adalah model layout dua dimensi untuk mengatur elemen-elemen html pada suatu _grid_ dengan jumlah baris dan kolom tertentu. Berbeda dengan _flex box_ yang hanya dapat mengatur elemen dalam sebuah kolom dan baris, _grid_ dapat mengatur elemen untuk diposisikan pada suatu grid di baris dan kolom yang kita inginkan. Hal ini membuat _flex box_ sangat berguna dalam membuat _layout_ seperti Mondrian _art_ dan sebagainya.
 
 </details>
+
+<details>
+<summary><h2><b>Tugas 6</b> (click to expand)</h2></summary>
+
+## Manfaat JavaScript dalam pengembangan aplikasi web
+
+JavaScript digunakan untuk menangani logika yang dibutuhkan dalam web. Hal ini dikarenakan HTML dan CSS bukanlah bahasa pemrograman sehingga keduanya tidak dapat menangani logika-logika seperti _if statements_, _looping_, dan sebagainya. Selain itu, JavaScript juga memungkinkan pengembang untuk menambahkan interaktivitas pada halaman web. Misalnya seperti membuat modal yang dapat dibuka dan ditutup, atau melakukan perubahan pada web tanpa dibutuhkan adanya _refresh_ halaman. Selain untuk interaktivitas, JavaScript juga dapat digunakan untuk mengambil dan mengolah data melalui sisi klien saja dengan fetch dan AJAX.
+
+## Fungsi await ketika menggunakan fetch()
+
+`await` digunakan agar data yang ingin diambil melalui fungsi `fetch()`, dapat diambil seluruhnya terlebih dahulu sebelum dapat dilanjutkan ke proses selanjutnya. Ketika ketika memanggil `await`, program akan berhenti sebentar untuk menunggu data yang ingin diambil.
+
+### Apa yang akan terjadi jika kita tidak menggunakan await?
+
+Apabila kita tidak menggunakan `await` ketika memanggil fungsi `fetch()`, maka bisa saja data yang ingin untuk ditampilkan tidak muncul karena program tidak menunggu agar keseluruhan data selesai diambil.
+
+## Mengapa kita perlu menggunakan decorator csrf_exempt pada view yang akan digunakan untuk AJAX POST?
+
+Kita perlu menggunakan decorator `@csrf_exempt` pada view yang digunakan untuk AJAX POST karena secara default Django menerapkan perlindungan CSRF (Cross-Site Request Forgery) pada setiap permintaan POST.
+
+## Mengapa pembersihan data input pengguna dilakukan di belakang (backend), kenapa tidak dilakukan di frontend saja?
+
+</details>
