@@ -111,7 +111,7 @@
         const name = DOMPurify.sanitize(product.fields.name);
         const description = DOMPurify.sanitize(product.fields.description);
         htmlString += `
-           {% include 'card_product.html' with product=product name=name description=description%}
+           {% include 'card_product.html' with product=product name=name description=des%}
         `;
       }); 
     }
