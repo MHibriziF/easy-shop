@@ -6,6 +6,8 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from main.forms import ProductEntryForm
 from main.models import Product
@@ -73,6 +75,24 @@ def create_product_entry(request):
 
     context = {'form': form}
     return render(request, "create_product_entry.html", context)
+
+@csrf_exempt
+@require_POST
+def add_product_ajax(request):
+    name = request.POST.get("name")
+    price = request.POST.get("price")
+    description = request.POST.get("description")
+    stock= request.POST.get("stock")
+    user = request.user
+
+    new_product = ProductEntryForm(
+        name=name, price=price,
+        description=description,
+        stock=stock, user=user
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
 
 def edit_product(request, id):
     product = Product.objects.get(pk=id)
