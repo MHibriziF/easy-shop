@@ -19,14 +19,14 @@
 {% include 'modal.html' %}
 
 <br />
-<div class="flex justify-evenly">
+<div class="flex justify-evenly space-x-2">
   <a href="{% url 'main:create_product_entry' %}">
-    <button class="bg-[#489CC1] text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer">
+    <button class="bg-[#489CC1] w-32 text-sm md:w-full text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer">
       Add New Product
     </button>
 
   </a>    
-  <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-[#489CC1] text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer" onclick="showModal();">
+  <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-[#489CC1] text-sm w-64 text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer" onclick="showModal();">
       Add New Product by AJAX
   </button>
 </div>
@@ -43,8 +43,13 @@
     .then(response => {
         if (response.ok) {
             refreshProductEntries();
-            document.getElementById("productEntryForm").reset();
-            hideModal(); 
+            console.log(response);
+            if (!response.ok) {
+              alert("Jangan kosong!");
+            } else {
+              document.getElementById("productEntryForm").reset();
+              hideModal(); 
+            }
         } else {
             console.error("Error adding product entry:", response.statusText);
         }
