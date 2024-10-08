@@ -35,23 +35,50 @@
 <h5 class="mt-5 ml-8">Sesi terakhir login: {{ last_login }}</h5>
 
 <script>
+  
   function addProductEntry() {
+    // Remove any existing error messages before new validation
+    function removeErrorMessages() {
+        document.querySelectorAll('.error-message').forEach(error => {
+            error.remove();
+        });
+    }
+
     fetch("{% url 'main:create_ajax' %}", {  
         method: "POST",
         body: new FormData(document.querySelector('#productEntryForm')), 
     })
     .then(response => {
-        if (response.ok) {
+        return response.json().then(data => ({
+            status: response.status,
+            body: data
+        }));
+    })
+    .then(({ status, body }) => {
+        removeErrorMessages(); // Clear previous errors
+
+        if (status === 201) {
+            // Product added successfully
             refreshProductEntries();
-            console.log(response);
-            if (!response.ok) {
-              alert("Jangan kosong!");
-            } else {
-              document.getElementById("productEntryForm").reset();
-              hideModal(); 
+            document.getElementById("productEntryForm").reset();
+            hideModal();
+        } else if (status === 400) {
+            if (body.errors.name) {
+                let nameField = document.getElementById("name");
+                let errorMessage = document.createElement("p");
+                errorMessage.className = "text-red-500 text-sm mt-1 error-message";
+                errorMessage.textContent = body.errors.name;
+                nameField.parentNode.appendChild(errorMessage);
+            }
+            if (body.errors.description) {
+                let descriptionField = document.getElementById("description");
+                let errorMessage = document.createElement("p");
+                errorMessage.className = "text-red-500 text-sm mt-1 error-message";
+                errorMessage.textContent = body.errors.description;
+                descriptionField.parentNode.appendChild(errorMessage);
             }
         } else {
-            console.error("Error adding product entry:", response.statusText);
+            console.error("Error adding product entry:", body);
         }
     })
     .catch(error => {

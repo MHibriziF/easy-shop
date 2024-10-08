@@ -1,5 +1,5 @@
 import datetime
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.core import serializers
 from django.shortcuts import render, redirect, reverse
@@ -84,6 +84,16 @@ def add_product_ajax(request):
     stock= request.POST.get("stock")
     user = request.user
 
+    if not name or not description:
+        return JsonResponse({
+            'status': 'ERROR',
+            'errors': {
+                'name': 'Name cannot be blank.' if not name else '',
+                'description': 'Description cannot be blank.' if not description else ''
+            }
+        }, status=400)
+
+    # Proceed to create product only if fields are valid
     new_product = Product(
         name=name, price=price,
         description=description,
@@ -91,7 +101,11 @@ def add_product_ajax(request):
     )
     new_product.save()
 
-    return HttpResponse(b"CREATED", status=201)
+    return JsonResponse({
+        'status': 'CREATED',
+        'name': name,
+        'description': description
+    }, status=201)
 
 def edit_product(request, id):
     product = Product.objects.get(pk=id)
