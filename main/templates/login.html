@@ -43,7 +43,11 @@
       <div class="p-4 mt-4 bg-white/50 rounded-md">
         <ul>
           {% for message in messages %}
-            <li class="text-green-600 font-bold">{{ message }}</li>
+            {% if 'success' in message.tags %}
+              <li class="text-green-600 font-bold">{{ message }}</li>
+            {% else %}
+              <li class="text-red-600 font-bold">{{ message }}</li>
+            {% endif %}
           {% endfor %}
         </ul>
       </div>
