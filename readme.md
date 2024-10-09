@@ -927,6 +927,183 @@ _Grid layout_ adalah model layout dua dimensi untuk mengatur elemen-elemen html 
 <details>
 <summary><h2><b>Tugas 6</b> (click to expand)</h2></summary>
 
+## Implementasi Checklist secara step-by-step
+
+### Ubahlah kode cards data product agar dapat mendukung AJAX GET
+
+1. Membuat file `card_product.html` di direktori `main/templates`.
+2. Menyalin kode yang berfungsi sebagai card di dalam `main.html` ke file `card.product.html`
+3. Menghapus _template tags if_ yang berada di `main.html` dan diganti dengan `<div id="product_entry_cards"></div>`
+4. Di bagian paling bawah file `main.html`, membuat tag script yang nantinya akan diisi kode-kode penting
+
+### Buatlah sebuah tombol yang membuka sebuah modal dengan form untuk menambahkan product.
+
+1. Membuat file baru bernama `modal.html` di direktori `main/templates`.
+2. Mengisi file `modal.html` dengan kode untuk modal
+3. Di `main.html`, menambahkan button berikut tepat di bawah elemen html tombol original.
+
+```html
+<button
+  data-modal-target="crudModal"
+  data-modal-toggle="crudModal"
+  class="btn bg-[#489CC1] text-sm w-64 text-white rounded-lg px-6 py-2 font-bold hover:bg-blue-100 hover:text-[#489CC1] transition duration-200 ease-in-out cursor-pointer"
+  onclick="showModal();"
+>
+  Add New Product by AJAX
+</button>
+```
+
+4. Di bagian script, menambahkan fungsionalitas buka tutup modal dengan fungsi `showModal()` dan `hideModal()` kemudian dihubungkan ke _event listener_ tombol-tombol yang bersesuaian.
+
+### Buatlah fungsi view baru untuk menambahkan product baru ke dalam basis data.
+
+1. Megimpor hal-hal berikut pada file `views.py` di direktori `main`
+
+```python
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
+```
+
+2. Membuat fungsi baru bernama `add_product_ajax()` yang isinya sebagai berikut
+
+```python
+@csrf_exempt
+@require_POST
+def add_product_ajax(request):
+    name = strip_tags(request.POST.get("name"))
+    price = request.POST.get("price")
+    description = strip_tags(request.POST.get("description"))
+    stock= request.POST.get("stock")
+    user = request.user
+
+    if not name or not description:
+        return JsonResponse({
+            'status': 'ERROR',
+            'errors': {
+                'name': 'Name cannot be blank.' if not name else '',
+                'description': 'Description cannot be blank.' if not description else ''
+            }
+        }, status=400)
+
+    new_product = Product(
+        name=name, price=price,
+        description=description,
+        stock=stock, user=user
+    )
+    new_product.save()
+
+    return JsonResponse({
+        'status': 'CREATED',
+        'name': name,
+        'description': description
+    }, status=201)
+```
+
+3. Di dalam `forms.py` direktori `main`, menambahkan dua fungsi `clean_name()` dan `clean_description()`
+
+### Buatlah path /create-ajax/ yang mengarah ke fungsi view yang baru kamu buat.
+
+Di dalam `urls.py` direktori `main`, menambahkan `path('create-ajax/', add_product_ajax, name='create_ajax'),` ke url patterns
+
+### Hubungkan form yang telah kamu buat di dalam modal kamu ke path /create-ajax/
+
+Di bagian script `main.html` menambahkan kode berikut
+
+```javascript
+function addProductEntry() {
+  function removeErrorMessages() {
+    document.querySelectorAll(".error-message").forEach((error) => {
+      error.remove();
+    });
+  }
+
+  fetch("{% url 'main:create_ajax' %}", {
+    method: "POST",
+    body: new FormData(document.querySelector("#productEntryForm")),
+  })
+    .then((response) => {
+      return response.json().then((data) => ({
+        status: response.status,
+        body: data,
+      }));
+    })
+    .then(({ status, body }) => {
+      removeErrorMessages();
+      if (status === 201) {
+        refreshProductEntries();
+        document.getElementById("productEntryForm").reset();
+        hideModal();
+      } else if (status === 400) {
+        if (body.errors.name) {
+          let nameField = document.getElementById("name");
+          let errorMessage = document.createElement("p");
+          errorMessage.className = "text-red-500 text-sm mt-1 error-message";
+          errorMessage.textContent = body.errors.name;
+          nameField.parentNode.appendChild(errorMessage);
+        }
+        if (body.errors.description) {
+          let descriptionField = document.getElementById("description");
+          let errorMessage = document.createElement("p");
+          errorMessage.className = "text-red-500 text-sm mt-1 error-message";
+          errorMessage.textContent = body.errors.description;
+          descriptionField.parentNode.appendChild(errorMessage);
+        }
+      } else {
+        console.error("Error adding product entry:", body);
+      }
+    })
+    .catch((error) => {
+      console.error("Network error:", error);
+    });
+}
+
+document.getElementById("productEntryForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  addProductEntry();
+});
+```
+
+### Lakukan refresh pada halaman utama secara asinkronus untuk menampilkan daftar product terbaru tanpa reload halaman utama secara keseluruhan.
+
+Di dalam tag script di file `main.html`, menambahkan kode sebagai berikut
+
+```javascript
+async function getProductEntries() {
+  return fetch("{% url 'main:show_json' %}").then((res) => res.json());
+}
+async function refreshProductEntries() {
+  document.getElementById("product_entry_cards").innerHTML = "";
+  document.getElementById("product_entry_cards").className = "";
+  const productEntries = await getProductEntries();
+  let htmlString = "";
+  let classNameString = "";
+
+  if (productEntries.length === 0) {
+    classNameString = "flex flex-col items-center justify-center";
+    htmlString = `
+      <p class="font-bold text-center mb-6">Produk belum tersedia 😢.</p>
+      <img src="https://media.tenor.com/l3BF03rFfh0AAAAM/bestcry-sad.gif" alt="crying man gif" class="rounded-full">
+      `;
+  } else {
+    classNameString =
+      "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 break-words";
+    productEntries.forEach((product) => {
+      const name = DOMPurify.sanitize(product.fields.name);
+      const description = DOMPurify.sanitize(product.fields.description);
+      htmlString += `
+           {% include 'card_product.html' with product=product name=name description=des%}
+        `;
+    });
+  }
+
+  document.getElementById("product_entry_cards").className = classNameString;
+  document.getElementById("product_entry_cards").innerHTML = htmlString;
+}
+refreshProductEntries();
+```
+
 ## Manfaat JavaScript dalam pengembangan aplikasi web
 
 JavaScript digunakan untuk menangani logika yang dibutuhkan dalam web. Hal ini dikarenakan HTML dan CSS bukanlah bahasa pemrograman sehingga keduanya tidak dapat menangani logika-logika seperti _if statements_, _looping_, dan sebagainya. Selain itu, JavaScript juga memungkinkan pengembang untuk menambahkan interaktivitas pada halaman web. Misalnya seperti membuat modal yang dapat dibuka dan ditutup, atau melakukan perubahan pada web tanpa dibutuhkan adanya _refresh_ halaman. Selain untuk interaktivitas, JavaScript juga dapat digunakan untuk mengambil dan mengolah data melalui sisi klien saja dengan fetch dan AJAX.
@@ -941,8 +1118,10 @@ Apabila kita tidak menggunakan `await` ketika memanggil fungsi `fetch()`, maka b
 
 ## Mengapa kita perlu menggunakan decorator csrf_exempt pada view yang akan digunakan untuk AJAX POST?
 
-Kita perlu menggunakan decorator `@csrf_exempt` pada view yang digunakan untuk AJAX POST karena secara default Django menerapkan perlindungan CSRF (Cross-Site Request Forgery) pada setiap permintaan POST.
+Kita perlu menggunakan decorator `@csrf_exempt` pada view yang digunakan untuk AJAX POST karena secara default Django menerapkan perlindungan CSRF (Cross-Site Request Forgery) pada setiap permintaan POST. Karena kita akan mengambil dan mengirim data via AJAX, django akan mengira permintaan ini adalah permintaan dari luar sehingga dianggap berbahaya dan permintaan akan diblokir. Untuk mencegah hal ini, kita menggunakan decorator `@csrf_exempt` agar django membiarkan kita melakukan permintaan melalui AJAX.
 
 ## Mengapa pembersihan data input pengguna dilakukan di belakang (backend), kenapa tidak dilakukan di frontend saja?
+
+Jika kita hanya membersihkan data di frontend saja, meskipun nantinya pada klien tidak terjadi apa-apa, tetapi perlu diingat bahwa penyerangan csrf dapat menyisipkan skrip berbahaya yang menyerang kita dari bagian backend. Artinya, jika kita tidak membersihkan data di backend juga, maka skrip jahat yang disisipkan akan tetap bekerja dan dieksekusi di backend meskipun di frontend tidak terlihat apa-apa.
 
 </details>

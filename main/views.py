@@ -93,7 +93,6 @@ def add_product_ajax(request):
             }
         }, status=400)
 
-    # Proceed to create product only if fields are valid
     new_product = Product(
         name=name, price=price,
         description=description,

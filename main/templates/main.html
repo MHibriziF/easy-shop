@@ -37,7 +37,7 @@
 <script>
   
   function addProductEntry() {
-    // Remove any existing error messages before new validation
+
     function removeErrorMessages() {
         document.querySelectorAll('.error-message').forEach(error => {
             error.remove();
@@ -55,10 +55,8 @@
         }));
     })
     .then(({ status, body }) => {
-        removeErrorMessages(); // Clear previous errors
-
+        removeErrorMessages();
         if (status === 201) {
-            // Product added successfully
             refreshProductEntries();
             document.getElementById("productEntryForm").reset();
             hideModal();
